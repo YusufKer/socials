@@ -1,24 +1,39 @@
-import logo from './logo.svg';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect
+} from "react-router-dom";
 import './App.css';
+import Navigation from "./components/Navigation";
+import Wall from "./components/Wall";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
+import {AuthProvider} from "./context/authContext";
+import {PostProvider} from "./context/postContext";
 
 function App() {
+  //logged in state needs to be changed to come from authentication context
+  const loggedIn = true;
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Navigation/>
+      <Switch>
+        <AuthProvider>
+          <div className="App">
+            <Route exact path="/">
+              {loggedIn?<PostProvider><Wall/></PostProvider>:<Redirect to="/login"/>}
+            </Route>
+            <Route path="/signup">
+              <Signup/>
+            </Route>
+            <Route path="/login">
+              <Login/>
+            </Route>
+          </div>
+        </AuthProvider>
+      </Switch>
+    </Router>
   );
 }
 
